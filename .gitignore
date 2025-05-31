@@ -3,3 +3,4 @@ sessions/
 auth_info/
 .idea/
 dist/
+.env
