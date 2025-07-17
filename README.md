@@ -178,5 +178,4 @@ If you like this project, consider starring ⭐ the repository and sharing it!
 
 ---
 
-Let me know if you'd like to add Docker, `.env` support, or Swagger documentation!
 
