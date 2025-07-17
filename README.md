@@ -47,7 +47,7 @@ http://localhost:3000.
 
 ## 📱 API Endpoints
 
-### 🔗 `/connect` (POST)
+#### 🔗 `/connect` (POST)
 
 Start the connection process and display the QR code in the terminal.
 
@@ -65,7 +65,7 @@ Response:
 
 ---
 
-### 💬 `/send-message` (POST)
+#### 💬 `/send-message` (POST)
 
 Send a WhatsApp message to a user or group.
 
@@ -93,7 +93,7 @@ Note: Use group IDs as JIDs for group messages (e.g., `1234567890-1234567890@g.u
 
 ---
 
-### 👥 `/groups` (GET)
+#### 👥 `/groups` (GET)
 
 Fetch the list of WhatsApp groups you're part of.
 
@@ -115,7 +115,7 @@ Response:
 
 ---
 
-### 🔓 `/logout` (DELETE)
+#### 🔓 `/logout` (DELETE)
 
 Logout from WhatsApp and delete session files.
 
@@ -132,13 +132,15 @@ Response:
 
 ---
 
-$# 🛠 Project Structure
+## 🛠 Project Structure
 
 ```
+
 .
 ├── index.js            # Main server file
 ├── auth_info/          # WhatsApp auth session folder (auto-created)
 └── README.md           # You're here!
+
 ```
 
 ---
