@@ -137,7 +137,7 @@ Response:
 ```
 
 .
-├── index.js            # Main server file
+├── src/index.js            # Main server file
 ├── auth_info/          # WhatsApp auth session folder (auto-created)
 └── README.md           # You're here!
 
