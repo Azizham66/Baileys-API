@@ -127,7 +127,7 @@ Response:
 
 ```
 200 OK: Logged out and session cleared
-```\
+```
 
 
 ---
