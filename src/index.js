@@ -87,13 +87,6 @@ async function logout() {
     }
 }
 
-
-// Usage:
-// sendMessage("905528176535@s.whatsapp.net", { text: "hey bro are you ok?" })
-//         .then(() => console.log("📤 Message sent"))
-//         .catch(err => console.error("❌ sendMessage error", err));
-
-
 app.post('/send-message', async (req, res) => {
     const { jid, message } = req.body;
 
