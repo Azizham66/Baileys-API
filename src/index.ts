@@ -1,9 +1,18 @@
+// Server Entry Point
 import express, { Request, Response } from "express";
 import http from "http";
+
+// routes and controllers
 import authRoutes from "@/routes/auth.routes";
+import messageRoutes from "@/routes/message.routes";
 import { loginController, logoutController } from "@/controllers/auth.controller";
+import { sendMessageController } from "@/controllers/message.controller";
+
+// Websocket and WhatsApp Client
 import { initializeSocketServer } from "@/socket";
 import { getSock, isConnected } from "@/whatsappClient";
+
+// Utils
 import { sendSuccess, sendError } from "@/utils/response";
 
 const app = express();
@@ -13,34 +22,18 @@ app.use(express.json());
 
 // Register Auth Routes
 app.use("/api/v2/auth", authRoutes);
+app.use("/api/v2/message", messageRoutes);
 
 // Backward Compatibility Routes
 app.post("/connect", loginController);
 app.delete("/logout", logoutController);
+app.post("/send-message", sendMessageController);
 
 // Create the HTTP server
 const server = http.createServer(app);
 
 // Initialize WebSockets
 initializeSocketServer(server);
-
-app.post('/send-message', async (req: Request, res: Response) => {
-    const { jid, message } = req.body;
-    const sock = getSock();
-
-    if (!sock || !isConnected()) {
-        return sendError(res, "Not connected to WhatsApp, make sure to call the endpoint /connect to be able to send a message", undefined, 400);
-    }
-
-    try {
-        await sock.sendMessage(jid, message);
-        console.log("📤 Message sent");
-        return sendSuccess(res, "Message sent Successfully");
-    } catch (err: any) {
-        console.error("❌ sendMessage error", err);
-        return sendError(res, "Failed to send message", err.message, 500);
-    }
-});
 
 // Add this function to list groups
 async function listGroups() {
