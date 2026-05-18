@@ -25,3 +25,11 @@ These instructions define the strict rules for code generation, refactoring, and
 - **Atomic Commits:** Each commit must represent a single, self-contained logical change. Do not mix refactoring with formatting or new feature additions in the same commit.
 - **Clean History:** Rebase and squash messy / "work-in-progress" (WIP) commits before merging or opening a Pull Request.
 - **No Direct Commits:** Direct commits to the `main` or `master` branches are strictly prohibited. All changes must be processed through a Pull Request and reviewed.
+
+## 3. Project-Specific Architecture & API Patterns
+
+- **Analyze Project Architecture:** Explicitly analyze the overarching project architecture before writing code. Check if the required functionality already exists elsewhere, or if it must be written in a certain way depending on other files. Investigate existing examples (e.g., inside `src/controllers`, `src/services`, and `src/utils`) to ensure strict consistency with established styles and typings.
+- **API Responses:** Strictly use the custom standard wrappers `sendSuccess` and `sendError` imported from `@/utils/response` for all Express controller responses. DO NOT use raw `res.status(...).json(...)`.
+- **WhatsApp Client Context:** Any endpoint interacting with Baileys or WhatsApp actions MUST check if the client is connected securely. Use `isConnected()` from `@/whatsappClient` at the top of the controller and return a 403 error via `sendError` if it evaluates to false.
+- **Express Params/Query Handling:** When extracting parameters (`req.params` or `req.query`), account for array typings to prevent TS compiler errors. Safely parse single strings (e.g., `Array.isArray(val) ? val[0] : val`).
+- **File Modifications:** AI agents must prefer using native file-edit workspace tools rather than raw terminal `Set-Content`/`echo` workflows for file generation.
