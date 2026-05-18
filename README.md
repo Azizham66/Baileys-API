@@ -1,4 +1,23 @@
-# Baileys WhatsApp API Server
+<p align="center">
+  <img src="assets/projectlogo.png" alt="What's Up Logo" width="180" />
+</p>
+
+<h1 align="center">What's Up</h1>
+
+<p align="center">
+  <a href="https://github.com/Azizham66/WhatsUP">
+    <img src="https://img.shields.io/github/stars/Azizham66/WhatsUP?style=for-the-badge" alt="GitHub Stars" />
+  </a>
+  <a href="https://github.com/Azizham66/WhatsUP/issues">
+    <img src="https://img.shields.io/github/issues/Azizham66/WhatsUP?style=for-the-badge" alt="GitHub Issues" />
+  </a>
+  <a href="https://github.com/Azizham66/WhatsUP/commits/main">
+    <img src="https://img.shields.io/github/last-commit/Azizham66/WhatsUP?style=for-the-badge" alt="Last Commit" />
+  </a>
+  <a href="https://github.com/Azizham66/WhatsUP/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Azizham66/WhatsUP?style=for-the-badge" alt="License" />
+  </a>
+</p>
 
 A robust, TypeScript-based, modular REST and WebSocket API for interacting with WhatsApp using the [Baileys](https://github.com/WhiskeySockets/Baileys) library.
 
@@ -19,8 +38,8 @@ A robust, TypeScript-based, modular REST and WebSocket API for interacting with 
 **Clone the repository:**
 
 ```bash
-git clone https://github.com/Azizham66/Baileys-API.git
-cd Baileys-API
+git clone https://github.com/Azizham66/WhatsUP.git
+cd WhatsUP
 ```
 
 **Install dependencies:**
