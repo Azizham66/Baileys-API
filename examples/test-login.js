@@ -1,5 +1,5 @@
-const { io } = require("socket.io-client");
-const qrcode = require("qrcode-terminal");
+import { io } from "socket.io-client";
+import qrcode from "qrcode-terminal";
 
 const SERVER_URL = "http://localhost:3000";
 const PHONE_NUMBER = "1234567890"; // Change this to your test WhatsApp number (with country code, no +)

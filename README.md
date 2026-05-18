@@ -1,28 +1,29 @@
-# WhatsApp API Server with Baileys
+# Baileys WhatsApp API Server
 
-This project provides a simple Node.js API interface for sending WhatsApp messages, listing groups, and managing connections using the [Baileys](https://github.com/WhiskeySockets/Baileys) library.
+A robust, TypeScript-based, modular REST and WebSocket API for interacting with WhatsApp using the [Baileys](https://github.com/WhiskeySockets/Baileys) library.
 
-## 📦 Features
+> **Note:** For legacy implementation details (pre-v1.0.0 architecture), please refer to the [Legacy Documentation](docs/legacy_readme.md).
 
-- ✅ Connect to WhatsApp using QR code authentication
-- 📤 Send messages via REST API
-- 👥 List all joined WhatsApp groups
-- 🔓 Logout and delete session
-- 🚀 Express-based REST server
+## Features
+
+- **Real-Time WebSockets:** Instantly push connection statuses, logic hooks, and authentication QR codes directly to frontend clients over `socket.io` rather than requiring polling.
+- **REST API (v2):** A highly modular MVC architectural layout for processing WhatsApp requests cleanly. 
+- **Batch Messaging & Throttling:** Features built-in smart queues that seamlessly handle string arrays for batch messaging with a baked-in 3-second anti-spam delay between requests.
+- **TypeScript Support:** End-to-end typed for superior maintainability and safety around the Baileys library.
+- **Dynamic Version Spoofing:** Connects seamlessly with the latest WhatsApp client version to combat `405 Method Not Allowed` bugs natively.
 
 ---
 
-## 🚀 Installation
+## Installation
 
-1. **Clone the repository:**
+**Clone the repository:**
 
 ```bash
 git clone https://github.com/Azizham66/Baileys-API.git
 cd Baileys-API
 ```
 
-2. Install dependencies:
-
+**Install dependencies:**
 
 ```bash
 npm install
@@ -30,152 +31,107 @@ npm install
 
 ---
 
-## ⚙️ Usage
+## Development & Execution
 
-1. Start the server
-
+**Launch Development Environment (Hot Reload):**
 ```bash
-node index.js
+npm run dev
 ```
 
-This will launch the server at
+**Build for Production:**
+```bash
+npm run build
+```
 
-http://localhost:3000.
+**Start Built Server:**
+```bash
+npm run start
+```
 
+**One-Time WhatsApp Pairing (Print QR then exit):**
+```bash
+npm run connect
+```
+
+This starts the API server, prints the QR code in your terminal, waits until WhatsApp is connected, then shuts the server down automatically (credentials remain saved in `auth_info/`).
+
+By default, the REST API and the WebSocket server run on `http://localhost:3000`.
 
 ---
 
-## 📱 API Endpoints
+## API Reference (v2)
 
-#### 🔗 `/connect` (POST)
+### Authentication
+- `POST /api/v2/auth/connect` - Triggers the WhatsApp connection and readies the WebSocket to emit the QR code.
+- `DELETE /api/v2/auth/logout` - Terminates the active session and clears local credential caching.
+- `POST /connect` & `DELETE /logout` - Exists for backwards compatibility.
 
-Start the connection process and display the QR code in the terminal.
+### Messaging
+- `POST /api/v2/message/send` - Send a text or rich message to a user or group.
+  - Also mapped to `POST /send-message` for backwards compatibility.
 
-```bash
-curl -X POST http://localhost:3000/connect
-```
-
-Response:
-
-```
-200 OK: QR code printed in terminal (or already connected)
-```
-
-
-
----
-
-#### 💬 `/send-message` (POST)
-
-Send a WhatsApp message to a user or group.
-
-Request Body:
-
+**Request Body Structure:**
 ```json
 {
-  "jid": "1234567890@s.whatsapp.net",
-  "message": {
-    "text": "Hello from API!"
-  }
+  "jid": "1234567890@s.whatsapp.net", 
+  "message": { "text": "Hello from API!" }
+}
+```
+*Note: `jid` natively supports an array of strings (e.g. `["123@s...", "124@s..."]`). The service will automatically sequentially send messages with anti-spam sleep throttling.*
+
+### Groups
+- `GET /api/v2/group` - List comprehensive metadata for all participating groups.
+- `GET /api/v2/group/min` - List condensed ID/Name properties of all groups.
+- `GET /api/v2/group/id/:id` - Fetch comprehensive metadata for a specific group ID.
+- `GET /api/v2/group/id/:id/min` - Fetch condensed data for a specific group ID.
+- `GET /api/v2/group/name/:name` - Fetch metadata matching a string name.
+
+All responses are packaged into a standard data wrapper:
+```json
+{
+  "success": true,
+  "message": "Operation successful",
+  "data": { ... }
 }
 ```
 
-cURL Example:
+---
 
-```bash
-curl -X POST http://localhost:3000/send-message \
-     -H "Content-Type: application/json" \
-     -d '{"jid": "1234567890@s.whatsapp.net", "message": { "text": "Hello from API!" }}'
+## WebSocket Integration
+
+Connect directly to the root namespace using `socket.io-client`:
+
+```javascript
+import { io } from "socket.io-client";
+const socket = io("http://localhost:3000");
+
+// Subscribe to QR Code emissions to display to the user
+socket.on("qr_code", (qrCodeString) => {
+    // Generates the raw QR string, convert with your favorite library!
+});
+
+// Follow Connection State
+socket.on("status", (data) => {
+    // Returns elements like: { state: "connected" | "disconnected" }
+});
 ```
 
-Note: Use group IDs as JIDs for group messages (e.g., `1234567890-1234567890@g.us`).
-
+To see a fully functioning flow between the API and the WebSockets, refer to `examples/test-login.js` and run `node examples/test-login.js`.
 
 ---
 
-#### 👥 `/groups` (GET)
+## Contributing
 
-Fetch the list of WhatsApp groups you're part of.
-
-```bash
-curl http://localhost:3000/groups
-```
-
-Response:
-
-```json
-[
-  {
-    "id": "1234567890-1234567890@g.us",
-    "name": "Group Name"
-  }
-]
-```
-
+Please see the [CONTRIBUTING.md](CONTRIBUTING.md) guide for rigid guidelines on our commit message formats, Single Responsibility requirements, and PR flows.
 
 ---
 
-#### 🔓 `/logout` (DELETE)
-
-Logout from WhatsApp and delete session files.
-
-```bash
-curl -X DELETE http://localhost:3000/logout
-```
-
-Response:
-
-```
-200 OK: Logged out and session cleared
-```
-
-
----
-
-## 🛠 Project Structure
-
-```
-
-.
-├── src/index.js            # Main server file
-├── auth_info/          # WhatsApp auth session folder (auto-created)
-└── README.md           # You're here!
-
-```
-
----
-
-## 🔐 Notes
-
-The QR code for login appears in the terminal when you POST to `/connect`.
-
-The session is persisted in the `auth_info` folder.
-
-If you delete the auth_info folder or call `/logout`, you'll need to rescan the QR code.
-
-
-
----
-
-## 🧾 License
+## License
 
 MIT
 
+## Author
 
----
-
-## 👤 Author
-
-ABDULAZIZ HAMZAH
-
-
-
----
-
-## ❤️ Support
-
-If you like this project, consider starring ⭐ the repository and sharing it!
-
----
+Abdulaziz Hamzah
 
 
