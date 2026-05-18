@@ -1,18 +1,28 @@
 {
   "name": "whatsapp-api",
-  "version": "0.1.0",
-  "description": "",
-  "main": "src/index.js",
+  "version": "1.0.0",
+  "description": "A robust, modular, and type-safe Node.js WebSocket & REST API for WhatsApp built with the Baileys library.",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsx watch src/index.ts",
-    "dev": "nodemon src/index.js",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "connect": "tsx scripts/connect.ts",
     "build": "tsc",
     "testbuild": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "whatsapp",
+    "api",
+    "bot",
+    "baileys",
+    "typescript",
+    "websocket",
+    "socket.io",
+    "rest"
+  ],
+  "author": "Abdulaziz Hamzah",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "@hapi/boom": "^10.0.1",
