@@ -8,7 +8,7 @@
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "connect": "tsx scripts/connect.ts",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "testbuild": "tsc --noEmit"
   },
   "keywords": [
@@ -41,6 +41,7 @@
     "@types/qrcode-terminal": "^0.12.2",
     "nodemon": "^3.1.14",
     "socket.io-client": "^4.8.3",
+    "tsc-alias": "^1.8.16",
     "typescript": "^6.0.3"
   }
 }
