@@ -21,6 +21,13 @@
 
 A robust, TypeScript-based, modular REST and WebSocket API for interacting with WhatsApp using the [Baileys](https://github.com/WhiskeySockets/Baileys) library.
 
+***
+
+## **Important Notice:** 
+This project uses `@whiskeysockets/baileys`, an unofficial third-party library. It is not affiliated with or supported by WhatsApp or Meta. Using this software uncautiously to interact with WhatsApp may violate their Terms of Service and could result in the permanent ban of your WhatsApp account. Use this API strictly at your own risk. The author assumes no liability or responsibility for any account bans, damages, or losses resulting from the use of this project.
+
+***
+
 > **Note:** For legacy implementation details (pre-v1.0.0 architecture), please refer to the [Legacy Documentation](docs/legacy_readme.md).
 
 ## Features
