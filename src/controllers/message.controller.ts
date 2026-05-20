@@ -10,6 +10,16 @@ export async function sendMessageController(req: Request, res: Response) {
         return sendError(res, "Missing or invalid required fields: jid and/or message", undefined, 400);
     }
 
+    // Limit maximum bulk recipients to prevent spam triggers & memory spikes
+    if (Array.isArray(jid) && jid.length > 50) {
+        return sendError(res, "Cannot send to more than 50 recipients at once", undefined, 400);
+    }
+
+    // Basic length limit for simple text messages (e.g. 5000 chars)
+    if (message?.text && message.text.length > 5000) {
+        return sendError(res, "Message text is too long (maximum 5000 characters)", undefined, 400);
+    }
+
     if (!isConnected()) {
         return sendError(res, "Not connected to WhatsApp, make sure to call the endpoint /connect to be able to send a message", undefined, 401);
     }

@@ -34,7 +34,8 @@ This project uses `@whiskeysockets/baileys`, an unofficial third-party library. 
 
 - **Real-Time WebSockets:** Instantly push connection statuses, logic hooks, and authentication QR codes directly to frontend clients over `socket.io` rather than requiring polling.
 - **REST API (v2):** A highly modular MVC architectural layout for processing WhatsApp requests cleanly. 
-- **Batch Messaging & Throttling:** Features built-in smart queues that seamlessly handle string arrays for batch messaging with a baked-in 3-second anti-spam delay between requests.
+- **Security & Rate Limiting:** Built-in safeguards against abuse, featuring a unified `p-queue` system to serialize all outgoing messages across concurrent requests, bulk recipient limits, and an `express-rate-limit` barrier to block IP flood attacks.
+- **Batch Messaging & Throttling:** Natively supports sending to string arrays for batch messaging with a baked-in 2-second anti-spam delay between requests to protect your WhatsApp account.
 - **TypeScript Support:** End-to-end typed for superior maintainability and safety around the Baileys library.
 - **Dynamic Version Spoofing:** Connects seamlessly with the latest WhatsApp client version to combat `405 Method Not Allowed` bugs natively.
 

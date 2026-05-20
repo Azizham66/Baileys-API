@@ -1,6 +1,7 @@
 import express from "express";
 import http, { Server as HttpServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
+import rateLimit from "express-rate-limit";
 
 import authRoutes from "@/routes/auth.routes";
 import messageRoutes from "@/routes/message.routes";
@@ -21,7 +22,22 @@ type StartedServer = {
 function createExpressApp() {
   const app = express();
 
-  app.use(express.json());
+  // Apply rate limiting to all requests
+  const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 60, // Limit each IP to 60 requests per `window` (here, per 1 minute)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    handler: (req, res) => {
+      res.status(429).json({
+        success: false,
+        message: "Too many requests from this IP, please try again after a minute"
+      });
+    }
+  });
+
+  app.use(limiter);
+  app.use(express.json({ limit: '10mb' }));
 
   app.use("/api/v2/auth", authRoutes);
   app.use("/api/v2/message", messageRoutes);
