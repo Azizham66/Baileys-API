@@ -30,6 +30,8 @@ This project uses `@whiskeysockets/baileys`, an unofficial third-party library. 
 
 > **Note:** For legacy implementation details (pre-v1.0.0 architecture), please refer to the [Legacy Documentation](docs/legacy_readme.md).
 
+> **Docs:** Start here for the full guide and troubleshooting: [docs/README.md](docs/README.md).
+
 ## Features
 
 - **Real-Time WebSockets:** Instantly push connection statuses, logic hooks, and authentication QR codes directly to frontend clients over `socket.io` rather than requiring polling.
@@ -55,6 +57,8 @@ cd WhatsUP
 ```bash
 npm install
 ```
+
+> Note: This repo currently depends on a release-candidate version of Baileys (`@whiskeysockets/baileys`). If you run into breaking changes, check Baileys release notes and consider pinning a stable version.
 
 ---
 
@@ -89,8 +93,8 @@ By default, the REST API and the WebSocket server run on `http://localhost:3000`
 ## API Reference (v2)
 
 ### Authentication
-- `POST /api/v2/auth/connect` - Triggers the WhatsApp connection and readies the WebSocket to emit the QR code.
-- `DELETE /api/v2/auth/logout` - Terminates the active session and clears local credential caching.
+- `POST /api/v2/auth/login` - Triggers the WhatsApp connection and readies the WebSocket to emit the QR code.
+- `POST /api/v2/auth/logout` - Terminates the active session (optionally clears local credential caching).
 - `POST /connect` & `DELETE /logout` - Exists for backwards compatibility.
 
 ### Messaging
@@ -146,6 +150,12 @@ socket.on("status", (data) => {
 To see a fully functioning flow between the API and the WebSockets, refer to `examples/test-login.js` and run `node examples/test-login.js`.
 
 ---
+
+## Troubleshooting
+
+- If Socket.IO clients receive no events, start here: [docs/troubleshooting.md](docs/troubleshooting.md)
+- If you see `@lid` identifiers and expect phone numbers, read: [docs/addressing-modes.md](docs/addressing-modes.md)
+- For a full architecture + debugging guide, see: [docs/README.md](docs/README.md)
 
 ## Contributing
 
