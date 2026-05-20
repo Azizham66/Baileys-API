@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.1] - 2026-05-20
+**Updated to the latest Bailey version (7.0.0-rc12) to fix the security flaw addressed in [GHSA-qvv5-jq5g-4cgg](https://github.com/WhiskeySockets/Baileys/security/advisories/GHSA-qvv5-jq5g-4cgg).**
+
+Visit [official Baileys](https://github.com/WhiskeySockets/Baileys/) repository for more information.
+
+---
+
 ## [1.5.0] - 2026-05-20
 
 ### Features
