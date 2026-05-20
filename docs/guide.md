@@ -111,10 +111,69 @@ Events emitted by the server:
   - emitted when QR refreshes.
 - `status` ({ state: "connected" | "disconnected", info?: unknown })
   - emitted when WhatsApp connects/disconnects.
-- `message` (parsed object)
-- `reaction` (parsed object)
-- `delete` (parsed object)
-- `messageUpdate` (parsed object)
+
+### Payload Objects
+
+When listening to message activity, the WebSocket emits objects constructed by the `messageParser.ts` pipeline. Below are the structural keys for each payload:
+
+#### 1. `socket.on("message", (msg) => { ... })`
+Receives live incoming messages.
+```json
+{
+  "messageIds": "123ABC456DEF",
+  "chatJid": "1234567890@s.whatsapp.net",
+  "senderJid": "1234567890@s.whatsapp.net",
+  "senderNumber": "1234567890",
+  "senderName": "John Doe",
+  "isGroup": false,
+  "groupName": null,
+  "isFromMe": false,
+  "timestamp": 1718000000000,
+  "text": "Hello world",
+  "isImage": false,
+  "isVideo": false,
+  "isAudio": false,
+  "isDocument": false,
+  "isSticker": false,
+  "isLocation": false,
+  "isURL": false,
+  "extractedUrl": null,
+  "mediaBase64": null, // Will contain raw Base64 string if message has physical media
+  "mimetype": null
+}
+```
+
+#### 2. `socket.on("reaction", (rxn) => { ... })`
+Receives emoji reaction additions and removals.
+```json
+{
+  "originalMessageId": "123ABC456DEF",
+  "chatJid": "1234567890@s.whatsapp.net",
+  "reactorJid": "1234567890@s.whatsapp.net",
+  "reactorNumber": "1234567890",
+  "emoji": "👍", 
+  "action": "add", // "add" or "remove"
+  "isGroup": false,
+  "timestamp": 1718000000000
+}
+```
+
+#### 3. `socket.on("delete", (del) => { ... })`
+Receives message revocation/deletion signals.
+```json
+{
+  "chatJid": "1234567890@s.whatsapp.net",
+  "senderJid": "1234567890@s.whatsapp.net",
+  "senderNumber": "1234567890",
+  "isGroup": false,
+  "isFromMe": true,
+  "messageId": "123ABC456DEF",
+  "groupName": null
+}
+```
+
+#### 4. `socket.on("messageUpdate", (upd) => { ... })`
+Receives edits made to previously sent messages. The payload mimics the exact structure of the standard `"message"` event above, but contains the edited `.text` and updated `.timestamp`.
 
 The forwarding happens in `src/socket.ts`.
 
