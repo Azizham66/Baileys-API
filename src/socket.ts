@@ -1,6 +1,8 @@
 import { Server } from "socket.io";
 import { waEmitter, isConnected, getQR } from "@/whatsappClient";
+import { messageListener } from "@/listeners/messageListener";
 import { Server as HttpServer } from "http";
+import { isWaEventsDebugEnabled } from "@/utils/debug";
 
 export function initializeSocketServer(httpServer: HttpServer) {
     const io = new Server(httpServer, {
@@ -39,6 +41,27 @@ export function initializeSocketServer(httpServer: HttpServer) {
 
     waEmitter.on("disconnected", (info) => {
         io.emit("status", { state: "disconnected", info });
+    });
+
+    // Forward WhatsApp message events to Socket.io clients
+    messageListener.on("message", (msg) => {
+        isWaEventsDebugEnabled() && console.log("[wa-events] emit message");
+        io.emit("message", msg);
+    });
+
+    messageListener.on("reaction", (rxn) => {
+        isWaEventsDebugEnabled() && console.log("[wa-events] emit reaction");
+        io.emit("reaction", rxn);
+    });
+
+    messageListener.on("delete", (del) => {
+        isWaEventsDebugEnabled() && console.log("[wa-events] emit delete");
+        io.emit("delete", del);
+    });
+
+    messageListener.on("messageUpdate", (upd) => {
+        isWaEventsDebugEnabled() && console.log("[wa-events] emit messageUpdate");
+        io.emit("messageUpdate", upd);
     });
 
     return io;
