@@ -2,6 +2,7 @@ import {
   AnyMessageContent,
   MiscMessageGenerationOptions,
   proto,
+  WAMessage,
 } from "@whiskeysockets/baileys";
 import { getSock } from "@/whatsappClient";
 
@@ -16,7 +17,7 @@ export async function sendMessageService(
   jid: string | string[],
   message: AnyMessageContent,
   options?: MiscMessageGenerationOptions,
-): Promise<proto.WebMessageInfo | undefined | (proto.WebMessageInfo | undefined)[]> {
+): Promise<WAMessage | undefined | (WAMessage | undefined)[]> {
     const sock = getSock();
 
     if (!sock) {
@@ -29,7 +30,7 @@ export async function sendMessageService(
     }
 
     if (Array.isArray(jid)) {
-        const results: (proto.WebMessageInfo | undefined)[] = [];
+        const results: (WAMessage | undefined)[] = [];
         for (let i = 0; i < jid.length; i++) {
             const targetJID = jid[i];
             // Push each message into the p-queue

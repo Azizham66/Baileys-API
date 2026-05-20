@@ -1,6 +1,6 @@
 {
   "name": "whats-up",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "A robust, modular, and type-safe Node.js WebSocket & REST API for WhatsApp built with the Baileys library.",
   "main": "dist/index.js",
   "scripts": {
@@ -26,7 +26,7 @@
   "type": "module",
   "dependencies": {
     "@hapi/boom": "^10.0.1",
-    "@whiskeysockets/baileys": "^6.7.21",
+    "@whiskeysockets/baileys": "^7.0.0-rc11",
     "chalk": "^5.4.1",
     "express": "^5.1.0",
     "express-rate-limit": "^8.5.2",

@@ -4,3 +4,6 @@ auth_info/
 .idea/
 dist/
 .env
+private/
+.agents/
+skills-lock.json

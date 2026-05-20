@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2026-05-20
+
+### Features
+- **Real-Time Incoming Message Broadcaster:** WebSockets now stream incoming WhatsApp events instantly to connected frontend clients. Includes support for:
+  - `message` (live incoming texts, parsed media)
+  - `reaction` (emoji additions/removals mapped perfectly to the reactor)
+  - `delete` (message revokes/deletes)
+  - `messageUpdate` (edited message tracking)
+- **Deep Payload Parsers:** Added `src/utils/messageParser.ts` for clean structural execution. Dynamically sanitizes Baileys deeply-nested and cryptic data schemas. Intercepts incoming messages to parse media attachments seamlessly into physical `base64` buffers. Handles precise logic for distinguishing Private Chat senders vs. Group Chat participants dynamically.
+- **Configurable Message Pipeline:** Added the `EnableMessageEvents` configuration object. You can now toggle `receive`, `delete`, `update`, and `reaction` listeners explicitly at scale natively.
+- **Global API Rate Limiting:** Enforced `express-rate-limit` on the main server (locking to 60 requests/minute) mapped seamlessly beside the internal concurrent `p-queue` delays, fundamentally shielding the local API and the host WhatsApp account from spam & flood flags.
+
+### Architecture & Fixes
+- **Strictly Typed Ecosystem (Zero Any):** Fully replaced trailing `any` types across the listener ecosystem. Safely mapped union type anomalies fired by Baileys inside `messages.delete` and partial updates fired from `messages.update`. 
+- **Array Traversal Safety:** Ensured array iterations natively intercept reaction/update arrays accurately.
+
+---
+
 ## [1.0.0] - 2026-05-18
 
 ### Features

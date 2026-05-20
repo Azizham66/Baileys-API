@@ -30,13 +30,16 @@ This project uses `@whiskeysockets/baileys`, an unofficial third-party library. 
 
 > **Note:** For legacy implementation details (pre-v1.0.0 architecture), please refer to the [Legacy Documentation](docs/legacy_readme.md).
 
+> **Docs:** Start here for the full guide and troubleshooting: [docs/README.md](docs/README.md).
+
 ## Features
 
-- **Real-Time WebSockets:** Instantly push connection statuses, logic hooks, and authentication QR codes directly to frontend clients over `socket.io` rather than requiring polling.
+- **Real-Time WebSockets:** Instantly push connection statuses, logic hooks, authentication QR codes, and incoming message activity (new texts, reactions, edited messages, and deletes) directly to frontend clients over `socket.io` rather than requiring polling.
 - **REST API (v2):** A highly modular MVC architectural layout for processing WhatsApp requests cleanly. 
-- **Security & Rate Limiting:** Built-in safeguards against abuse, featuring a unified `p-queue` system to serialize all outgoing messages across concurrent requests, bulk recipient limits, and an `express-rate-limit` barrier to block IP flood attacks.
+- **Security & Rate Limiting:** Built-in safeguards against abuse, featuring a unified `p-queue` system to serialize all outgoing messages across concurrent requests, an IP-based `express-rate-limit` barrier (60 req/min), and strict JSON payload size limitations to block IP flood and DDoS attacks.
+- **Deep Message Parsers:** Seamlessly transforms complex nested Baileys message events into cleanly typed responses. Features native base64 buffering of physical images/media coming inbound.
 - **Batch Messaging & Throttling:** Natively supports sending to string arrays for batch messaging with a baked-in 2-second anti-spam delay between requests to protect your WhatsApp account.
-- **TypeScript Support:** End-to-end typed for superior maintainability and safety around the Baileys library.
+- **TypeScript Support:** End-to-end typed for superior maintainability and zero-tolerance safety around the Baileys library.
 - **Dynamic Version Spoofing:** Connects seamlessly with the latest WhatsApp client version to combat `405 Method Not Allowed` bugs natively.
 
 ---
@@ -55,6 +58,8 @@ cd WhatsUP
 ```bash
 npm install
 ```
+
+> Note: This repo currently depends on a release-candidate version of Baileys (`@whiskeysockets/baileys`). If you run into breaking changes, check Baileys release notes and consider pinning a stable version.
 
 ---
 
@@ -89,8 +94,8 @@ By default, the REST API and the WebSocket server run on `http://localhost:3000`
 ## API Reference (v2)
 
 ### Authentication
-- `POST /api/v2/auth/connect` - Triggers the WhatsApp connection and readies the WebSocket to emit the QR code.
-- `DELETE /api/v2/auth/logout` - Terminates the active session and clears local credential caching.
+- `POST /api/v2/auth/login` - Triggers the WhatsApp connection and readies the WebSocket to emit the QR code.
+- `POST /api/v2/auth/logout` - Terminates the active session (optionally clears local credential caching).
 - `POST /connect` & `DELETE /logout` - Exists for backwards compatibility.
 
 ### Messaging
@@ -141,11 +146,25 @@ socket.on("qr_code", (qrCodeString) => {
 socket.on("status", (data) => {
     // Returns elements like: { state: "connected" | "disconnected" }
 });
+
+// Stream Incoming WhatsApp Messages
+socket.on("message", (msg) => console.log("New Message:", msg));
+
+// Stream Chat Reactions
+socket.on("reaction", (rxn) => console.log("New Reaction:", rxn));
 ```
 
-To see a fully functioning flow between the API and the WebSockets, refer to `examples/test-login.js` and run `node examples/test-login.js`.
+To see a fully functioning flow between the API and the WebSockets, refer to the included client scripts: 
+- **`node examples/test-login.js`** - Triggers a login and simulates outbound test sockets
+- **`node examples/messageClient.js`** - Demonstrates how to listen to live message payloads (texts, reactions, deletions, edits) directly using `socket.io`.
 
 ---
+
+## Troubleshooting
+
+- If Socket.IO clients receive no events, start here: [docs/troubleshooting.md](docs/troubleshooting.md)
+- If you see `@lid` identifiers and expect phone numbers, read: [docs/addressing-modes.md](docs/addressing-modes.md)
+- For a full architecture + debugging guide, see: [docs/README.md](docs/README.md)
 
 ## Contributing
 

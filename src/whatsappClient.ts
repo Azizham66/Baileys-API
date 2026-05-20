@@ -9,6 +9,15 @@ import { Boom } from "@hapi/boom";
 import qrcode from "qrcode-terminal";
 import fs from "fs";
 import { EventEmitter } from "events";
+import { intializeMessageListener } from "@/listeners/messageListener";
+import {
+  APP_EVENT_CONNECTED,
+  APP_EVENT_DISCONNECTED,
+  APP_EVENT_QR_CODE,
+  BAILEYS_EVENT_CONNECTION_UPDATE,
+  BAILEYS_EVENT_CREDS_UPDATE,
+  BAILEYS_MESSAGE_EVENTS,
+} from "@/constants/whatsappEvents";
 
 export const waEmitter = new EventEmitter();
 
@@ -49,22 +58,25 @@ function connectToWA(): Promise<void> {
         connectTimeoutMs: 60_000,
       });
 
-      sock.ev.on("creds.update", saveCreds);
+      // Initialize the message listener immediately so events aren't missed
+      intializeMessageListener(sock);
 
-      sock.ev.on("connection.update", (update) => {
+      sock.ev.on(BAILEYS_EVENT_CREDS_UPDATE, saveCreds);
+
+      sock.ev.on(BAILEYS_EVENT_CONNECTION_UPDATE, (update) => {
         const { connection, lastDisconnect, qr } = update;
 
         if (qr) {
           currentQR = qr;
           qrcode.generate(qr, { small: true });
-          waEmitter.emit("qr_code", qr);
+          waEmitter.emit(APP_EVENT_QR_CODE, qr);
         }
 
         if (connection === "open") {
           console.log("✅ WhatsApp connection opened");
           !!currentQR && (currentQR = null); // Clear QR code once connected if it exists
           _isConnected = true;
-          waEmitter.emit("connected");
+          waEmitter.emit(APP_EVENT_CONNECTED);
           resolve();
         }
 
@@ -75,11 +87,15 @@ function connectToWA(): Promise<void> {
           const disconnectError = new Boom(lastDisconnect?.error, {
             statusCode: (lastDisconnect?.error as Boom | undefined)?.output?.statusCode,
           });
-          waEmitter.emit("disconnected,", lastDisconnect);
+          waEmitter.emit(APP_EVENT_DISCONNECTED, lastDisconnect);
 
           // Clean up the socket
           if (sock) {
-            sock.ev.removeAllListeners("connection.update");
+            sock.ev.removeAllListeners(BAILEYS_EVENT_CONNECTION_UPDATE);
+            sock.ev.removeAllListeners(BAILEYS_EVENT_CREDS_UPDATE);
+            for (const eventName of BAILEYS_MESSAGE_EVENTS) {
+              sock.ev.removeAllListeners(eventName);
+            }
           }
           sock = null;
 
